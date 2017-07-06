@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+	   xmlns:aop="http://www.springframework.org/schema/aop"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:task="http://www.springframework.org/schema/task" 
+       xsi:schemaLocation="
+       	http://www.springframework.org/schema/beans
+       	http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       	http://www.springframework.org/schema/aop
+		http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/tx 
+		http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+		http://www.springframework.org/schema/context 
+		http://www.springframework.org/schema/context/spring-context-4.1.xsd
+		http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task-4.1.xsd
+		"> 
+		<task:annotation-driven/>  
+	<!-- 读取资源文件 -->
+		<bean id="config" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+			<property name="location" value="classpath:properties/jdbc.properties" />
+		</bean> 
+	<!-- 配置c3p0数据源 -->
+        <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        	<property name="driverClass" value="${driverClass}" />
+        	<property name="jdbcUrl" value="${jdbcUrl}" />
+			<property name="user" value="${user}" />
+			<property name="password" value="${password}" />
+			<property name="minPoolSize" value="${minPoolSize}" />
+			<property name="maxPoolSize" value="${maxPoolSize}" />
+			<property name="maxIdleTime" value="${maxIdleTime}" />
+			<property name="acquireIncrement" value="${acquireIncrement}" />
+			<property name="initialPoolSize" value="${initialPoolSize}" />
+			<property name="idleConnectionTestPeriod" value="${idleConnectionTestPeriod}" />
+        </bean>
+    <!-- 配置数据库连接相关属性和加载数据映射文件，现在主要用于项目启动创建或更新数据库表 -->
+        <bean id="sessionFactory" class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+        	<property name="dataSource" ref="dataSource" />
+        	<property name="hibernateProperties">
+        		<props>
+        			<prop key="hibernate.dialect">${dialect}</prop>
+        			<prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
+        			<prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+        			<prop key="hibernate.format_sql">${hibernate.format_sql}</prop>
+        			<prop key="hibernate.use_sql_comments">${hibernate.use_sql_comments}</prop>
+        		</props>
+        	</property>
+        	<!-- 指定这些包下的bean类 hibernate注解   映射到数据库 -->
+        	<property name="packagesToScan">
+	        	<list>
+		        	<value>com.lys.*.bean..</value>
+		        	<value>com.bus.*.bean..</value>
+	        	</list>
+        	</property>
+        </bean>
+	<!-- 配置jdbc模版 -->  
+	    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">  
+	        <property name="dataSource" ref="dataSource" />  
+	    </bean>  
+	<!-- 配置jdbc的事务管理器 --> 
+        <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+			<property name="dataSource" ref="dataSource"/>
+		</bean> 
+	<!-- 配置事务通知  -->
+		<tx:advice id="txAdvice" transaction-manager="txManager">
+			<tx:attributes>
+				<tx:method name="*TRANS" propagation="REQUIRED" /> 
+				<tx:method name="*" propagation="SUPPORTS" read-only="true" />
+			</tx:attributes>
+		</tx:advice>
+	<!-- 配置切面，并织入事务通知 -->
+		<aop:config> 
+			<aop:pointcut id="serviceMethod" expression="execution(* *..biz.*.*(..))" />
+			<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethod" />
+		</aop:config>
+		
+</beans>

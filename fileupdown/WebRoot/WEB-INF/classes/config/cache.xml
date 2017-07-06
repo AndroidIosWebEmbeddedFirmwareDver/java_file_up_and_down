@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:ehcache="http://www.springframework.org/schema/ehcache"
+	xsi:schemaLocation="
+     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+     http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.1.xsd
+     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd
+     http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+     http://www.springframework.org/schema/ehcache  http://www.springframework.org/schema/cache/springmodules-ehcache.xsd">
+
+	<!-- 配置缓存管理器 -->
+	<bean id="defaultCacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation">
+			<value>classpath:config/ehcache.xml</value>
+		</property>
+	</bean>
+
+	<!-- 配置一个简单的缓存工厂bean对象 -->
+	<bean id="defaultCache" class="org.springframework.cache.ehcache.EhCacheFactoryBean">
+		<property name="cacheManager" ref="defaultCacheManager" />
+		<!-- 使用缓存 关联ehcache.xml中的缓存配置 -->
+		<property name="cacheName" value="defaultCache" />
+	</bean>
+
+	<!-- 配置一个缓存拦截器对象，处理具体的缓存业务 -->
+	<bean id="ehCacheMethodInterceptor" class="com.lys.sys.cache.EhCacheMethodInterceptor" />
+	<!-- 参与缓存的切入点对象 (切入点对象，确定何时何地调用拦截器) -->
+	<bean id="methodCachePointCut" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<!-- 配置缓存切面 -->
+		<property name="advice" ref="ehCacheMethodInterceptor" />
+		<!-- .*表示前面的前缀(包括包名) 表示print方法com.lys.mvc.biz\..*bizCache.*\.find.*-->
+		<property name="patterns">
+			<list>
+				<value>.*\..*biz\..*CacheBizImpl\.get.*</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>

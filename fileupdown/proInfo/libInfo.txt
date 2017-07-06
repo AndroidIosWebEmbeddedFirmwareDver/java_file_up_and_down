@@ -1,0 +1,55 @@
+
+#common
+	commons-beanutils-1.9.2.jar
+	commons-collections-3.2.jar
+	commons-fileupload-1.3.jar
+	commons-io-2.4.jar
+	commons-lang-2.6.jar
+	commons-logging-1.2.jar
+	dom4j-1.6.1.jar
+	javassist-3.12.0.GA.jar
+	log4j-1.2.17.jar
+#db
+	#mysql
+		mysql-connector-java-5.1.38-bin.jar
+	#oracle
+		oracle11g_11.2.0.1.0_JDBC_ojdbc6.jar
+	c3p0-0.9.1.jar
+#hibernate
+	hibernate-jpa-2.0-api-1.0.1.Final.jar
+	hibernate3.jar
+	jta-1.1.jar
+#json
+	fastjson-1.2.8.jar
+#others
+	#cache
+		ehcache-core-2.5.2.jar
+		slf4j-api-1.6.1.jar
+		slf4j-log4j12-1.6.1.jar
+	#excel
+		poi-3.9.jar
+		commons-digester.jar
+		commons-jexl-1.1.jar
+		jxls-core-0.9.5.jar
+#springmvc
+	#validation
+		hibernate-validator-4.3.0.Final.jar
+		jboss-logging-3.1.0.CR2.jar
+		validation-api-1.0.0.GA.jar
+	aopalliance-1.0.jar
+	aspectjweaver-1.8.5.jar
+	com.springsource.javax.servlet.jsp.jstl-1.2.0.v20110728.jar
+	com.springsource.org.apache.taglibs.standard-1.1.2.v20110517.jar
+	spring-aop-4.1.5.RELEASE.jar
+	spring-beans-4.1.5.RELEASE.jar
+	spring-context-4.1.5.RELEASE.jar
+	spring-context-support-4.1.5.RELEASE.jar
+	spring-core-4.1.5.RELEASE.jar
+	spring-expression-4.1.5.RELEASE.jar
+	spring-jdbc-4.1.5.RELEASE.jar
+	spring-orm-4.1.5.RELEASE.jar
+	spring-oxm-4.1.5.RELEASE.jar
+	spring-tx-4.1.5.RELEASE.jar
+	spring-web-4.1.5.RELEASE.jar
+	spring-webmvc-4.1.5.RELEASE.jar
+ 
